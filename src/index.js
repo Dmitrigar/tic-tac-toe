@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
 
-class Suqare extends React.Component {
+class Square extends React.Component {
   render() {
     return <button className="square">{/* TODO */}</button>;
   }
@@ -53,3 +53,7 @@ class Game extends React.Component {
     );
   }
 }
+
+//======================================
+
+ReactDOM.render(<Game />, document.getElementById("root"));
