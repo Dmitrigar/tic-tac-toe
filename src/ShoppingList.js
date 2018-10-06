@@ -1,4 +1,6 @@
-class ShoppingLIst extends React.Component {
+import React from "react";
+
+class ShoppingList extends React.Component {
   render() {
     return (
       <div className="shopping-list">
@@ -12,6 +14,8 @@ class ShoppingLIst extends React.Component {
           <li>Cabage</li>
         </ul>
       </div>
-    )
+    );
   }
 }
+
+export default ShoppingList;
