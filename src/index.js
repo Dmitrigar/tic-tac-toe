@@ -4,7 +4,10 @@ import "./index.css";
 
 function Square(props) {
   return (
-    <button className="square" onClick={props.onClick}>
+    <button
+      className={`square${props.win ? " --win" : ""}`}
+      onClick={props.onClick}
+    >
       {props.value}
     </button>
   );
@@ -19,13 +22,18 @@ class Board extends React.Component {
     };
   }
 
-  renderSquare(i) {
+  renderSquare(i, win) {
     return (
       <Square
         value={this.state.squares[i]}
         onClick={() => this.handleClick(i)}
+        win={this.winContainsSquare(i, win)}
       />
     );
+  }
+
+  winContainsSquare(i, win) {
+    return win && win.includes(i);
   }
 
   handleClick(i) {
@@ -38,7 +46,8 @@ class Board extends React.Component {
   }
 
   render() {
-    const winner = calculateWinner(this.state.squares);
+    const win = calculateWin(this.state.squares);
+    const winner = getWinner(this.state.squares, win);
     const status = !winner
       ? `Next player: ${this.getNextPlayerMark()}`
       : `The Winner is ${winner}`;
@@ -46,19 +55,19 @@ class Board extends React.Component {
       <div>
         <div className="status">{status}</div>
         <div className="board-row">
-          {this.renderSquare(0)}
-          {this.renderSquare(1)}
-          {this.renderSquare(2)}
+          {this.renderSquare(0, win)}
+          {this.renderSquare(1, win)}
+          {this.renderSquare(2, win)}
         </div>
         <div className="board-row">
-          {this.renderSquare(3)}
-          {this.renderSquare(4)}
-          {this.renderSquare(5)}
+          {this.renderSquare(3, win)}
+          {this.renderSquare(4, win)}
+          {this.renderSquare(5, win)}
         </div>
         <div className="board-row">
-          {this.renderSquare(6)}
-          {this.renderSquare(7)}
-          {this.renderSquare(8)}
+          {this.renderSquare(6, win)}
+          {this.renderSquare(7, win)}
+          {this.renderSquare(8, win)}
         </div>
       </div>
     );
@@ -86,6 +95,15 @@ class Game extends React.Component {
 }
 
 function calculateWinner(squares) {
+  const win = calculateWin(squares);
+  return getWinner(squares, win);
+}
+
+function getWinner(squares, win) {
+  return !win ? null : squares[win[0]];
+}
+
+function calculateWin(squares) {
   const winningLines = [
     [0, 1, 2],
     [3, 4, 5],
@@ -96,12 +114,11 @@ function calculateWinner(squares) {
     [0, 4, 8],
     [2, 4, 6]
   ];
-  const win = winningLines.find(line => {
+  return winningLines.find(line => {
     const [a, b, c] = line;
     const [tic, tac, toe] = [squares[a], squares[b], squares[c]];
     return tic && tac && toe && tic === tac && tac === toe;
   });
-  return !win ? null : squares[win[0]];
 }
 
 //======================================
