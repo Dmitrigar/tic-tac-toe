@@ -17,7 +17,7 @@ class Board extends React.Component {
       <Square
         value={this.props.squares[i]}
         onClick={() => this.props.onClick(i)}
-        win={winContainsSquare(i, this.props.win)}
+        win={winContainsSquare(this.props.win, i)}
       />
     );
   }
@@ -127,7 +127,7 @@ function calculateWin(squares) {
   });
 }
 
-function winContainsSquare(i, win) {
+function winContainsSquare(win, i) {
   return win && win.includes(i);
 }
 
