@@ -56,19 +56,23 @@ class Game extends React.Component {
     return this.state.history;
   }
 
-  mapStep(step, i) {
-    const desc = this.getMoveDescription(i);
+  mapStep(step, move) {
+    const desc = this.getMoveDescription(step, move);
     return (
-      <li key={i}>
-        <button onClick={() => this.jumpTo(i)}>{desc}</button>
+      <li key={move}>
+        <button onClick={() => this.jumpTo(move)}>{desc}</button>
       </li>
     );
   }
 
-  getMoveDescription(i) {
-    return i
-      ? `Go to move #${i} (${this.history()[i].checked})`
+  getMoveDescription(step, move) {
+    return move
+      ? `Go to move #${move} (${this.getStepDescription(step)})`
       : "Go to game start";
+  }
+
+  getStepDescription(step) {
+    return step.checked;
   }
 
   jumpTo(step) {
