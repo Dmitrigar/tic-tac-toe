@@ -4,107 +4,96 @@ import React from "react";
 class Game extends React.Component {
   constructor(props) {
     super(props);
+    const step = {
+      squares: Array(9).fill(null),
+      checkedSquare: null,
+      win: null
+    };
+    const move = 0;
     this.state = {
-      history: [{ squares: Array(9).fill(null), checked: null }],
-      stepNumber: 0,
-      xIsNext: true
+      history: [step],
+      step,
+      move
     };
   }
 
   render() {
-    const moves = this.history().map((step, i) => this.mapStep(step, i));
     return (
       <div className="game">
         <div className="game-board">
           <Board
-            squares={this.current().squares}
-            win={this.win()}
-            onClick={i => this.makeMove(i)}
+            squares={this.state.step.squares}
+            win={this.state.step.win}
+            onClick={i => this.clickSquare(i)}
           />
         </div>
         <div className="game-info">
           <div className="status">{this.status()}</div>
-          <ol>{moves}</ol>
+          <ol>{this.moves()}</ol>
         </div>
       </div>
     );
   }
 
+  clickSquare(i) {
+    const history = this.state.history.slice(0, this.state.move + 1);
+    const squares = history[history.length - 1].squares.slice();
+    if (this.state.win || squares[i]) {
+      return;
+    }
+
+    squares[i] = this.getPlayer(this.state.move);
+    const step = { squares, checkedSquare: i, win: calculateWin(squares) };
+    this.setState({
+      history: history.concat([step]),
+      step,
+      move: history.length
+    });
+  }
+
   status() {
-    return !this.winner()
-      ? getNextPlayerStatus(this.xIsNext())
-      : getWinnerStatus(this.winner());
+    const step = this.state.step;
+    return !step.win
+      ? `Turn: ${this.getPlayer(this.state.move)}`
+      : `The Winner is ${getWinner(step.squares, step.win)}`;
   }
 
-  xIsNext() {
-    return this.state.xIsNext;
+  moves() {
+    return this.state.history.map((step, i) => this.mapToMoveItem(step, i));
   }
 
-  winner() {
-    return getWinner(this.current().squares, this.win());
-  }
-
-  win() {
-    return calculateWin(this.current().squares);
-  }
-
-  current() {
-    return this.history()[this.state.stepNumber];
-  }
-
-  history() {
-    return this.state.history;
-  }
-
-  mapStep(step, move) {
-    const desc = this.getMoveDescription(step, move);
+  mapToMoveItem(step, move) {
+    const desc = move
+      ? this.getMoveDescription(step, move)
+      : `Game start, turn: ${this.getPlayer(0)}`;
     return (
       <li key={move}>
-        <button onClick={() => this.jumpTo(move)}>{desc}</button>
+        <button onClick={() => this.clickMove(move)}>{desc}</button>
       </li>
     );
   }
 
   getMoveDescription(step, move) {
-    return move
-      ? `Go to move #${move} (${this.getStepDescription(step)})`
-      : "Go to game start";
+    const c = this.getSquareCoordinates(step.checkedSquare);
+    return `#${move}: (${c.x}, ${c.y}), turn: ${this.getPlayer(move)}`;
   }
 
-  getStepDescription(step) {
-    return step.checked;
+  getSquareCoordinates(i) {
+    const sizeX = 3;
+    const sizeY = 3;
+    return { x: 1 + (i % sizeX), y: 1 + Math.floor(i / sizeY) };
   }
 
-  jumpTo(step) {
+  clickMove(move) {
     this.setState({
-      stepNumber: step,
-      xIsNext: step % 2 === 0
+      step: this.state.history[move],
+      move
     });
   }
 
-  makeMove(i) {
-    const history = this.state.history.slice(0, this.state.stepNumber + 1);
-    const current = history[history.length - 1];
-    const squares = current.squares.slice();
-    if (calculateWin(squares) || squares[i]) {
-      return;
-    }
-    const xIsNext = this.state.xIsNext;
-    squares[i] = xIsNext ? "X" : "O";
-    this.setState({
-      history: history.concat([{ squares, checked: i }]),
-      stepNumber: history.length,
-      xIsNext: !xIsNext
-    });
+  getPlayer(move) {
+    return move % 2 === 0 ? "X" : "O";
   }
-}
-
-function getNextPlayerStatus(xIsNext) {
-  return `Next player: ${xIsNext ? "X" : "O"}`;
-}
-
-function getWinnerStatus(winner) {
-  return `The Winner is ${winner}`;
 }
 
 function getWinner(squares, win) {

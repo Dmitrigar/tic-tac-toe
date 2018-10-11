@@ -24,18 +24,15 @@ class Board extends React.Component {
     );
   }
   renderSquare(i) {
+    const win = this.props.win;
     return (
       <Square
         value={this.props.squares[i]}
         onClick={() => this.props.onClick(i)}
-        win={winContainsSquare(this.props.win, i)}
+        isWin={win && win.includes(i)}
       />
     );
   }
-}
-
-function winContainsSquare(win, i) {
-  return win && win.includes(i);
 }
 
 export default Board;
