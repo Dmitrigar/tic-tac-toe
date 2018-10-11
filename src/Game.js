@@ -1,4 +1,5 @@
 import Board from "./Board";
+import MoveList from "./MoveList";
 import React from "react";
 
 class Game extends React.Component {
@@ -29,7 +30,12 @@ class Game extends React.Component {
         </div>
         <div className="game-info">
           <div className="status">{this.status()}</div>
-          <ul className="move-list">{this.moves()}</ul>
+          <MoveList
+            history={this.state.history}
+            selected={this.state.move}
+            clickMove={move => this.clickMove(move)}
+            getMoveDescription={(step, move) => this.getMoveDescription(step, move)}
+          />
         </div>
       </div>
     );
@@ -58,23 +64,9 @@ class Game extends React.Component {
       : `The Winner is ${getWinner(step.squares, step.win)}`;
   }
 
-  moves() {
-    return this.state.history.map((step, i) => this.mapToMoveItem(step, i));
-  }
-
-  mapToMoveItem(step, move) {
-    const desc = move
-      ? this.getMoveDescription(step, move)
-      : `Game start, turn: ${this.getPlayer(0)}`;
-    const className = move === this.state.move ? "move--bold" : "move";
-    return (
-      <li key={move} className={className}>
-        <button onClick={() => this.clickMove(move)}>{desc}</button>
-      </li>
-    );
-  }
-
   getMoveDescription(step, move) {
+    if (!move) return `Game start, turn: ${this.getPlayer(0)}`;
+
     const c = this.getSquareCoordinates(step.checkedSquare);
     return `Move #${move}: (${c.x}, ${c.y}), turn: ${this.getPlayer(move)}`;
   }
