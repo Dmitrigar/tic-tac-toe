@@ -29,7 +29,7 @@ class Game extends React.Component {
         </div>
         <div className="game-info">
           <div className="status">{this.status()}</div>
-          <ol>{this.moves()}</ol>
+          <ul className="move-list">{this.moves()}</ul>
         </div>
       </div>
     );
@@ -66,8 +66,9 @@ class Game extends React.Component {
     const desc = move
       ? this.getMoveDescription(step, move)
       : `Game start, turn: ${this.getPlayer(0)}`;
+    const className = move === this.state.move ? "move--bold" : "move";
     return (
-      <li key={move}>
+      <li key={move} className={className}>
         <button onClick={() => this.clickMove(move)}>{desc}</button>
       </li>
     );
@@ -75,7 +76,7 @@ class Game extends React.Component {
 
   getMoveDescription(step, move) {
     const c = this.getSquareCoordinates(step.checkedSquare);
-    return `#${move}: (${c.x}, ${c.y}), turn: ${this.getPlayer(move)}`;
+    return `Move #${move}: (${c.x}, ${c.y}), turn: ${this.getPlayer(move)}`;
   }
 
   getSquareCoordinates(i) {
