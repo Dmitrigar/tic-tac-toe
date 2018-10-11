@@ -38,7 +38,7 @@ class Game extends React.Component {
   clickSquare(i) {
     const history = this.state.history.slice(0, this.state.move + 1);
     const squares = history[history.length - 1].squares.slice();
-    if (this.state.win || squares[i]) {
+    if (this.state.step.win || squares[i]) {
       return;
     }
 
