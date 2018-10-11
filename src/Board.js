@@ -3,30 +3,30 @@ import React from "react";
 
 class Board extends React.Component {
   render() {
-    return (
-      <div>
-        <div className="board-row">
-          {this.renderSquare(0)}
-          {this.renderSquare(1)}
-          {this.renderSquare(2)}
-        </div>
-        <div className="board-row">
-          {this.renderSquare(3)}
-          {this.renderSquare(4)}
-          {this.renderSquare(5)}
-        </div>
-        <div className="board-row">
-          {this.renderSquare(6)}
-          {this.renderSquare(7)}
-          {this.renderSquare(8)}
-        </div>
-      </div>
-    );
+    const width = 3;
+    const height = 3;
+    const rows = [];
+    let currentRowIndex = 0;
+    while (rows.length < Number(height))
+      rows.push(this.renderRow(currentRowIndex++, width))
+
+    return <div className="board">{rows}</div>;
   }
+
+  renderRow(i, width) {
+    const squares = [];
+    let currentSquareKey = i * width;
+    while (squares.length < Number(width))
+      squares.push(this.renderSquare(currentSquareKey++));
+
+    return <div className="board-row" key={i}>{squares}</div>;
+  }
+
   renderSquare(i) {
     const win = this.props.win;
     return (
       <Square
+        key={i}
         value={this.props.squares[i]}
         onClick={() => this.props.onClick(i)}
         isWin={win && win.includes(i)}
