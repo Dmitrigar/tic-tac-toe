@@ -11,33 +11,29 @@ class MoveList extends React.Component {
   render() {
     return (
       <div className="move-list">
-        <button className="move-list__toggle" onClick={() => this.reverse()}>
+        <button
+          className="move-list__toggle"
+          onClick={() => this.setState({ reverse: !this.state.reverse })}
+        >
           {this.state.reverse ? "/\\" : "\\/"}
         </button>
-        <ul>{this.getMoves()}</ul>
+        <ul>
+          {this.state.reverse ? this.getMoves().reverse() : this.getMoves()}
+        </ul>
       </div>
     );
   }
 
-  reverse() {
-    this.setState({ reverse: !this.state.reverse });
-  }
-
   getMoves() {
-    const items = this.props.history.map((step, move) =>
-      this.mapToMoveItem(step, move)
-    );
-    return this.state.reverse ? items.reverse() : items;
-  }
-
-  mapToMoveItem(step, move) {
-    const desc = this.props.getMoveDescription(step, move);
-    const className = move === this.props.selected ? "move--bold" : "move";
-    return (
-      <li key={move} className={className}>
-        <button onClick={() => this.props.clickMove(move)}>{desc}</button>
-      </li>
-    );
+    return this.props.history.map((step, move) => {
+      const desc = this.props.getMoveDescription(step, move);
+      const className = move === this.props.selected ? "move--bold" : "move";
+      return (
+        <li key={move} className={className}>
+          <button onClick={() => this.props.clickMove(move)}>{desc}</button>
+        </li>
+      );
+    });
   }
 }
 
