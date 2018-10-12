@@ -1,24 +1,31 @@
 import React from "react";
 
 class MoveList extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      reverse: false
+    };
+  }
+
   render() {
     return (
       <div>
-        <button onClick={() => this.reverse()}>Reverse</button>
+        <button onClick={() => this.reverse()}>{this.state.reverse ? "/\\" : "\\/" }</button>
         <ul className="move-list">{this.getMoves()}</ul>
       </div>
     );
   }
 
   reverse() {
-    alert("bam");
-    this.forceUpdate();
+    this.setState({ reverse: !this.state.reverse });
   }
 
   getMoves() {
-    return this.props.history.map((step, move) =>
+    const items = this.props.history.map((step, move) =>
       this.mapToMoveItem(step, move)
     );
+    return this.state.reverse ? items.reverse() : items;
   }
 
   mapToMoveItem(step, move) {
