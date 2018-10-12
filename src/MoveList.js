@@ -10,9 +10,11 @@ class MoveList extends React.Component {
 
   render() {
     return (
-      <div>
-        <button onClick={() => this.reverse()}>{this.state.reverse ? "/\\" : "\\/" }</button>
-        <ul className="move-list">{this.getMoves()}</ul>
+      <div className="move-list">
+        <button className="move-list__toggle" onClick={() => this.reverse()}>
+          {this.state.reverse ? "/\\" : "\\/"}
+        </button>
+        <ul>{this.getMoves()}</ul>
       </div>
     );
   }
