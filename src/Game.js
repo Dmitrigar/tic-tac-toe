@@ -34,7 +34,9 @@ class Game extends React.Component {
             history={this.state.history}
             selected={this.state.move}
             clickMove={move => this.clickMove(move)}
-            getMoveDescription={(step, move) => this.getMoveDescription(step, move)}
+            getMoveDescription={(step, move) =>
+              this.getMoveDescription(step, move)
+            }
           />
         </div>
       </div>
@@ -59,16 +61,16 @@ class Game extends React.Component {
 
   status() {
     const step = this.state.step;
-    return !step.win
-      ? `Turn: ${this.getPlayer(this.state.move)}`
-      : `The Winner is ${getWinner(step.squares, step.win)}`;
+    if (step.win) return `The Winner is ${getWinner(step.squares, step.win)}`;
+    if (step.squares.every(x => x)) return "The Draw";
+    return `Turn: ${this.getPlayer(this.state.move)}`;
   }
 
   getMoveDescription(step, move) {
-    if (!move) return `Game start, turn: ${this.getPlayer(0)}`;
+    if (!move) return `Game start: ${this.getPlayer(0)} starts`;
 
     const c = this.getSquareCoordinates(step.checkedSquare);
-    return `Move #${move}: (${c.x}, ${c.y}), turn: ${this.getPlayer(move)}`;
+    return `Move #${move}: (${c.x}, ${c.y}) by ${this.getPlayer(move - 1)}`;
   }
 
   getSquareCoordinates(i) {
